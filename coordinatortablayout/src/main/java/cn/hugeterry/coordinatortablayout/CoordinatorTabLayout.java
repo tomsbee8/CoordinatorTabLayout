@@ -23,6 +23,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import cn.hugeterry.coordinatortablayout.listener.LoadHeaderImagesListener;
 import cn.hugeterry.coordinatortablayout.listener.OnTabSelectedListener;
@@ -40,9 +41,12 @@ public class CoordinatorTabLayout extends CoordinatorLayout {
     private ActionBar mActionbar;
     private TabLayout mTabLayout;
     private ImageView mImageView;
+    private TextView titleTextView;
     private CollapsingToolbarLayout mCollapsingToolbarLayout;
     private LoadHeaderImagesListener mLoadHeaderImagesListener;
     private OnTabSelectedListener mOnTabSelectedListener;
+    private boolean titleInCenter;
+    private int tabLayoutHeight;
 
     public CoordinatorTabLayout(Context context) {
         super(context);
@@ -55,6 +59,7 @@ public class CoordinatorTabLayout extends CoordinatorLayout {
         if (!isInEditMode()) {
             initView(context);
             initWidget(context, attrs);
+            initToolbar();
         }
     }
 
@@ -64,15 +69,16 @@ public class CoordinatorTabLayout extends CoordinatorLayout {
         if (!isInEditMode()) {
             initView(context);
             initWidget(context, attrs);
+            initToolbar();
         }
     }
 
     private void initView(Context context) {
         LayoutInflater.from(context).inflate(R.layout.view_coordinatortablayout, this, true);
-        initToolbar();
-        mCollapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsingtoolbarlayout);
-        mTabLayout = (TabLayout) findViewById(R.id.tabLayout);
-        mImageView = (ImageView) findViewById(R.id.imageview);
+        mCollapsingToolbarLayout = findViewById(R.id.collapsingtoolbarlayout);
+        mTabLayout = findViewById(R.id.tabLayout);
+        mImageView = findViewById(R.id.imageview);
+        titleTextView = findViewById(R.id.toolbar_title_tv);
     }
 
     private void initWidget(Context context, AttributeSet attrs) {
@@ -90,14 +96,32 @@ public class CoordinatorTabLayout extends CoordinatorLayout {
 
         int tabTextColor = typedArray.getColor(R.styleable.CoordinatorTabLayout_tabTextColor, Color.WHITE);
         mTabLayout.setTabTextColors(ColorStateList.valueOf(tabTextColor));
+
+        titleInCenter = typedArray.getBoolean(R.styleable.CoordinatorTabLayout_titleInCenter, false);
+        if (titleInCenter) {
+            titleTextView.setVisibility(VISIBLE);
+        } else {
+            titleTextView.setVisibility(GONE);
+        }
+
+        TypedArray actionbarSizeTypedArray = context.obtainStyledAttributes(new int[] { android.R.attr.actionBarSize });
+        int actionbarHeight = actionbarSizeTypedArray.getDimensionPixelSize(0, 0);
+        tabLayoutHeight =typedArray.getDimensionPixelSize(R.styleable.CoordinatorTabLayout_tabLayoutHeight,actionbarHeight);
+        ViewGroup.LayoutParams layoutParams =mTabLayout.getLayoutParams();
+        layoutParams.height = tabLayoutHeight;
+        mTabLayout.setLayoutParams(layoutParams);
+
         typedArray.recycle();
     }
 
     private void initToolbar() {
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        mToolbar.setPadding(0,0,0,tabLayoutHeight);
         ((AppCompatActivity) mContext).setSupportActionBar(mToolbar);
         mActionbar = ((AppCompatActivity) mContext).getSupportActionBar();
+
     }
+
 
     /**
      * 设置Toolbar标题
@@ -106,7 +130,12 @@ public class CoordinatorTabLayout extends CoordinatorLayout {
      * @return CoordinatorTabLayout
      */
     public CoordinatorTabLayout setTitle(String title) {
-        if (mActionbar != null) {
+        if (titleInCenter && mActionbar != null) {
+            mToolbar.setTitleMarginTop(0);
+            mActionbar.setDisplayShowTitleEnabled(false);
+            titleTextView.setText(title);
+        } else {
+            mToolbar.setTitleMarginTop(15);
             mActionbar.setTitle(title);
         }
         return this;
