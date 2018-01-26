@@ -104,10 +104,10 @@ public class CoordinatorTabLayout extends CoordinatorLayout {
             titleTextView.setVisibility(GONE);
         }
 
-        TypedArray actionbarSizeTypedArray = context.obtainStyledAttributes(new int[] { android.R.attr.actionBarSize });
+        TypedArray actionbarSizeTypedArray = context.obtainStyledAttributes(new int[]{android.R.attr.actionBarSize});
         int actionbarHeight = actionbarSizeTypedArray.getDimensionPixelSize(0, 0);
-        tabLayoutHeight =typedArray.getDimensionPixelSize(R.styleable.CoordinatorTabLayout_tabLayoutHeight,actionbarHeight);
-        ViewGroup.LayoutParams layoutParams =mTabLayout.getLayoutParams();
+        tabLayoutHeight = typedArray.getDimensionPixelSize(R.styleable.CoordinatorTabLayout_tabLayoutHeight, actionbarHeight);
+        ViewGroup.LayoutParams layoutParams = mTabLayout.getLayoutParams();
         layoutParams.height = tabLayoutHeight;
         mTabLayout.setLayoutParams(layoutParams);
 
@@ -116,7 +116,7 @@ public class CoordinatorTabLayout extends CoordinatorLayout {
 
     private void initToolbar() {
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
-        mToolbar.setPadding(0,0,0,tabLayoutHeight);
+        mToolbar.setPadding(0, 0, 0, tabLayoutHeight);
         ((AppCompatActivity) mContext).setSupportActionBar(mToolbar);
         mActionbar = ((AppCompatActivity) mContext).getSupportActionBar();
 
@@ -130,13 +130,13 @@ public class CoordinatorTabLayout extends CoordinatorLayout {
      * @return CoordinatorTabLayout
      */
     public CoordinatorTabLayout setTitle(String title) {
-        if (titleInCenter && mActionbar != null) {
-            mToolbar.setTitleMarginTop(0);
-            mActionbar.setDisplayShowTitleEnabled(false);
-            titleTextView.setText(title);
-        } else {
-            mToolbar.setTitleMarginTop(15);
-            mActionbar.setTitle(title);
+        if (mActionbar != null) {
+            if (titleInCenter) {
+                mActionbar.setDisplayShowTitleEnabled(false);
+                titleTextView.setText(title);
+            } else {
+                mActionbar.setTitle(title);
+            }
         }
         return this;
     }
