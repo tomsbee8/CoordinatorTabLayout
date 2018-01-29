@@ -1,5 +1,6 @@
 # CoordinatorTabLayout
 
+[![Build Status](https://travis-ci.org/tomsbee8/CoordinatorTabLayout.svg?branch=master)](https://travis-ci.org/tomsbee8/CoordinatorTabLayout)
 [![License](https://img.shields.io/badge/license-Apache%202.0-green.svg)](https://github.com/hugeterry/CoordinatorTabLayout/blob/master/LICENSE.txt)
 [![Download](https://api.bintray.com/packages/hugeterry/CoordinatorTabLayout/CoordinatorTabLayout/images/download.svg) ](https://bintray.com/hugeterry/CoordinatorTabLayout/CoordinatorTabLayout/_latestVersion)
 
