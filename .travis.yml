@@ -9,7 +9,7 @@ android:
   components:
     # https://github.com/travis-ci/travis-ci/issues/6040#issuecomment-219367943
     - tools
-    - android-26
+    - android-27
     - build-tools-27.0.3
     - platform-tools
     - extra-android-support
