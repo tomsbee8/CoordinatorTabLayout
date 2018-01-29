@@ -45,8 +45,11 @@ public class CoordinatorTabLayout extends CoordinatorLayout {
     private CollapsingToolbarLayout mCollapsingToolbarLayout;
     private LoadHeaderImagesListener mLoadHeaderImagesListener;
     private OnTabSelectedListener mOnTabSelectedListener;
+    private boolean isTranslucentStatusBar;
     private boolean titleInCenter;
     private int tabLayoutHeight;
+    private int scrimVisibleHeightTrigger;
+
 
     public CoordinatorTabLayout(Context context) {
         super(context);
@@ -111,6 +114,9 @@ public class CoordinatorTabLayout extends CoordinatorLayout {
         layoutParams.height = tabLayoutHeight;
         mTabLayout.setLayoutParams(layoutParams);
 
+        scrimVisibleHeightTrigger = typedArray.getDimensionPixelSize(R.styleable.CoordinatorTabLayout_scrimVisibleHeightTrigger, 0);
+        setScrimVisibleHeightTrigger(scrimVisibleHeightTrigger);
+
         typedArray.recycle();
     }
 
@@ -119,7 +125,7 @@ public class CoordinatorTabLayout extends CoordinatorLayout {
         mToolbar.setPadding(0, 0, 0, tabLayoutHeight);
         ((AppCompatActivity) mContext).setSupportActionBar(mToolbar);
         mActionbar = ((AppCompatActivity) mContext).getSupportActionBar();
-
+        
     }
 
 
@@ -188,6 +194,23 @@ public class CoordinatorTabLayout extends CoordinatorLayout {
     public CoordinatorTabLayout setContentScrimColorArray(@NonNull int[] colorArray) {
         mColorArray = colorArray;
         return this;
+    }
+
+    /**
+     * 设置上滑触发toolbar背景颜色变化的距离
+     * 【大于的"?attr/actionBarSize"才为有效距离，否则toolbar背景颜色不会变化】
+     *
+     * @param scrimVisibleHeightTrigger
+     * @return
+     */
+    private void setScrimVisibleHeightTrigger(int scrimVisibleHeightTrigger) {
+        if (mCollapsingToolbarLayout != null && scrimVisibleHeightTrigger > 0) {
+            if(isTranslucentStatusBar){
+                mCollapsingToolbarLayout.setScrimVisibleHeightTrigger(SystemView.getStatusBarHeight(mContext) + tabLayoutHeight + scrimVisibleHeightTrigger);
+            }else{
+                mCollapsingToolbarLayout.setScrimVisibleHeightTrigger(tabLayoutHeight + scrimVisibleHeightTrigger);
+            }
+        }
     }
 
     private void setupTabLayout() {
@@ -305,6 +328,9 @@ public class CoordinatorTabLayout extends CoordinatorLayout {
      */
     public CoordinatorTabLayout setTranslucentStatusBar(@NonNull Activity activity) {
 
+        if(isTranslucentStatusBar){
+            return this;
+        }
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
             return this;
         }
@@ -327,6 +353,9 @@ public class CoordinatorTabLayout extends CoordinatorLayout {
                     layoutParams.rightMargin,
                     layoutParams.bottomMargin);
         }
+        isTranslucentStatusBar = true;
+
+        setScrimVisibleHeightTrigger(scrimVisibleHeightTrigger);
 
         return this;
     }
