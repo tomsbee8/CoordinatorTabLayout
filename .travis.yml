@@ -16,7 +16,6 @@ android:
     - extra-android-support
     - extra-google-m2repository
 
-before_script: echo y | ${ANDROID_HOME}tools/bin/sdkmanager --channel=3 "tools" "platform-tools" "platforms;android-27"
 script: ./gradlew build
 
 after_failure:
