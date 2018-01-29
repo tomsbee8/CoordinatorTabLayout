@@ -1,14 +1,5 @@
 language: android
-jdk: oraclejdk8
-
-before_cache:
-  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
-  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
-cache:
-  directories:
-    - $HOME/.gradle/caches/
-    - $HOME/.gradle/wrapper/
-    - $HOME/.android/build-cache
+jdk: oraclejdk7
 
 before_install:
   - mkdir "$ANDROID_HOME/licenses" || true
@@ -19,6 +10,11 @@ android:
     # https://github.com/travis-ci/travis-ci/issues/6040#issuecomment-219367943
     - tools
     - tools
+    - android-26
+    - build-tools-27.0.3
+    - platform-tools
+    - extra-android-support
+    - extra-google-m2repository
 
 before_script: echo y | ${ANDROID_HOME}tools/bin/sdkmanager --channel=3 "tools" "platform-tools" "platforms;android-27"
 script: ./gradlew build
